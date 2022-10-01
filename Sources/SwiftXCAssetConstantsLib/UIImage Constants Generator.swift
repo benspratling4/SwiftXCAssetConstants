@@ -9,8 +9,9 @@ import Foundation
 
 public class UIImageGenerator {
 	
-	public init(imageNames:[String]) {
+	public init(imageNames:[String], context:Context) {
 		self.imageNames = imageNames
+		self.context = context
 	}
 	
 	public func generateFile()->String {
@@ -21,11 +22,16 @@ public class UIImageGenerator {
 		+ Self.boilerPlateBottom
 	}
 	
+	lazy var moduleName:String = {
+		return context == .swiftPackage ? ".module" : ".designConstants"
+	}()
+	
 	func imageConstantDeclaration(for imageName:String)->String {
-		return "public static let \(imageName.swiftyStaticVariableName):UIImage = UIImage(named:\"\(imageName)\", in:.module, compatibleWith:nil)!"
+		return "public static let \(imageName.swiftyStaticVariableName):UIImage = UIImage(named:\"\(imageName)\", in:\(moduleName), compatibleWith:nil)!"
 	}
 	
 	let imageNames:[String]
+	let context:Context
 	
 	static let boilerPlateTop = """
 extension UIImage {
@@ -37,6 +43,8 @@ extension UIImage {
 
 
 }
+
+
 """
 	
 }

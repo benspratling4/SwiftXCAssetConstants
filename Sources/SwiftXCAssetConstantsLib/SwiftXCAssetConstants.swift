@@ -3,14 +3,17 @@ import Foundation
 
 public class XCAssetAnalyzer {
 	
-	public init(urlToXCAsset:URL) {
+	public init(urlToXCAsset:URL, context:Context) {
 		self.rootURL = urlToXCAsset
+		self.context = context
 	}
 	
 	public func fileContents()->Data {
-		return "import UIKit\n".data(using: .utf8)!
-			+ UIColorGenerator(colorNames: colorNames).generateFile().data(using: .utf8)!
-			+ UIImageGenerator(imageNames: imageNames).generateFile().data(using: .utf8)!
+		return topBoilerPlate()
+			+ UIColorGenerator(colorNames: colorNames, context: context).generateFile().data(using: .utf8)!
+			+ UIImageGenerator(imageNames: imageNames, context: context).generateFile().data(using: .utf8)!
+			+ bottomBoilerPlate()
+		
 	}
 	
 	public lazy var colorNames:[String] = {
@@ -34,8 +37,38 @@ public class XCAssetAnalyzer {
 			) ?? []
 	}()
 	
+	func topBoilerPlate()->Data {
+		"import UIKit\n".data(using: .utf8)!
+	}
+	
+	func bottomBoilerPlate()->Data {
+		switch context {
+		case .swiftPackage:
+			return "\n\n".data(using: .utf8)!
+			
+		case .xcodeProject:
+			return """
+extension Bundle {
+	fileprivate static let designConstants:Bundle = Bundle(for:DesignConstantsAnchor.self)
+}
+fileprivate class DesignConstantsAnchor { }
+
+""".data(using: .utf8)!
+		}
+		
+		
+	}
+	
+	
+	private var context:Context
+	
 	private lazy var fileManager = FileManager()
 	
 	private let rootURL:URL
 	
+}
+
+public enum Context {
+	case swiftPackage
+	case xcodeProject
 }

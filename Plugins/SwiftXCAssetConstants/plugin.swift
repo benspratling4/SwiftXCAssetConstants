@@ -46,7 +46,7 @@ extension SwiftXCAssetConstants : XcodeBuildToolPlugin {
 				let output = context.pluginWorkDirectory.appending("\(base)_ui_constants.swift")
 				return .buildCommand(displayName: "Create UIColor and UIImage constants from \(base).xcassets"
 									 ,executable: try context.tool(named: "SwiftXCAssetConstantsExec").path
-									 ,arguments:[input.string, output.string]
+									 ,arguments:[input.string, output.string, "--xcodeproject"]
 									 ,inputFiles: [input]
 									 ,outputFiles: [output])
 			})
