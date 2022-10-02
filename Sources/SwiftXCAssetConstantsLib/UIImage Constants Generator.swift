@@ -15,11 +15,19 @@ public class UIImageGenerator {
 	}
 	
 	public func generateUIKitFile()->String {
-		return Self.boilerPlateTop
+		return "extension UIImage {\n"
 		+ imageNames
 			.map({ imageConstantDeclaration(for:$0) })
 			.joined(separator: "\n")
-		+ Self.boilerPlateBottom
+		+ "\n}\n"
+	}
+	
+	public func generateSwiftUIFile()->String {
+		return "extension Image {\n"
+		+ imageNames
+			.map({ imageSwiftUIConstantDeclaration(for:$0) })
+			.joined(separator: "\n")
+		+ "\n}\n"
 	}
 	
 	lazy var moduleName:String = {
@@ -30,21 +38,13 @@ public class UIImageGenerator {
 		return "public static let \(imageName.swiftyStaticVariableName):UIImage = UIImage(named:\"\(imageName)\", in:\(moduleName), compatibleWith:nil)!"
 	}
 	
+	
+	func imageSwiftUIConstantDeclaration(for imageName:String)->String {
+		return "public static let \(imageName.swiftyStaticVariableName):Image = Image(\"\(imageName)\", bundle:\(moduleName))"
+	}
+	
 	let imageNames:[String]
 	let context:Context
 	
-	static let boilerPlateTop = """
-extension UIImage {
-
-
-"""
-	
-	static let boilerPlateBottom = """
-
-
-}
-
-
-"""
 	
 }

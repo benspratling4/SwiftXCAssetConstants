@@ -9,11 +9,19 @@ public class XCAssetAnalyzer {
 	}
 	
 	public func fileContents()->Data {
-		return topBoilerPlate()
-			+ UIColorGenerator(colorNames: colorNames, context: context).generateUIKitFile().data(using: .utf8)!
-			+ UIImageGenerator(imageNames: imageNames, context: context).generateUIKitFile().data(using: .utf8)!
+		return (topBoilerPlate()
+			+ UIColorGenerator(colorNames: colorNames, context: context).generateUIKitFile()
+			+ UIImageGenerator(imageNames: imageNames, context: context).generateUIKitFile()
 			+ bottomBoilerPlate()
+			+ "\n\n#if canImport(SwiftUI)\nimport SwiftUI\n\n"
+				+ UIColorGenerator(colorNames: colorNames, context: context).generateSwiftUIFile()
+				+ UIImageGenerator(imageNames: imageNames, context: context).generateSwiftUIFile()
+				+ "\n#endif\n"
+				
+		).data(using: .utf8)!
 	}
+	
+	
 	
 	public lazy var colorNames:[String] = {
 		return allSubUrls
@@ -36,14 +44,14 @@ public class XCAssetAnalyzer {
 			) ?? []
 	}()
 	
-	func topBoilerPlate()->Data {
-		"#if canImport(UIKit)\nimport UIKit\n".data(using: .utf8)!
+	func topBoilerPlate()->String {
+		"#if canImport(UIKit)\nimport UIKit\n"
 	}
 	
-	func bottomBoilerPlate()->Data {
+	func bottomBoilerPlate()->String {
 		switch context {
 		case .swiftPackage:
-			return "\n\n#endif\n".data(using: .utf8)!
+			return "\n\n#endif\n"
 			
 		case .xcodeProject:
 			return ( "#" + "endif" +  """
@@ -53,11 +61,10 @@ extension Bundle {
 }
 fileprivate class DesignConstantsAnchor { }
 
-""").data(using: .utf8)!
+""")
 		}
-		
-		
 	}
+	
 	
 	
 	private var context:Context

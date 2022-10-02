@@ -7,7 +7,9 @@ let package = Package(
     name: "SwiftXCAssetConstants",
 	platforms: [
 		.iOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
-//		.tvOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
+		.tvOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
+//		.watchOS(.v7),
+		.macCatalyst(.v13),
 	],
     products: [
 		.plugin(name: "SwiftXCAssetConstants", targets: ["SwiftXCAssetConstants"]),

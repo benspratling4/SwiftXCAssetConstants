@@ -15,12 +15,9 @@ guard arguments.count >= 3 else {
 
 let inputFilePath = arguments[1]
 let outputFilePath = arguments[2]
-//print("arguments = \(arguments)")
 let isXcodeProject:Bool = arguments.contains("--xcodeproject")
 
-//print("from \(inputFilePath) to \(outputFilePath) ")
 try XCAssetAnalyzer(urlToXCAsset: URL(fileURLWithPath: inputFilePath)
 					, context: isXcodeProject ? .xcodeProject : .swiftPackage)
 	.fileContents()
 	.write(to: URL(fileURLWithPath: outputFilePath))
-//print("main success")
