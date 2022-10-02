@@ -16,7 +16,7 @@ public class UIColorGenerator {
 		self.context = context
 	}
 	
-	public func generateFile()->String {
+	public func generateUIKitFile()->String {
 		return Self.boilerPlateTop
 		+ colorNames
 			.map({ colorConstantDeclaration(for:$0) })

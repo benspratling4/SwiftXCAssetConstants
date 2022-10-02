@@ -14,7 +14,9 @@ public class SomeViewController : UIViewController {
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .bad__color😅_name
-		let image = UIImageView(image: .sample)
+//		let imageView = UIImageView(image:UIImage(named: "sample", in: .module, compatibleWith: nil)!)
+		let imageView = UIImageView(image: .sample)
+		view.addSubview(imageView)
 	}
 	
 }

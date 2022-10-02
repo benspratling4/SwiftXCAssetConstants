@@ -10,10 +10,9 @@ public class XCAssetAnalyzer {
 	
 	public func fileContents()->Data {
 		return topBoilerPlate()
-			+ UIColorGenerator(colorNames: colorNames, context: context).generateFile().data(using: .utf8)!
-			+ UIImageGenerator(imageNames: imageNames, context: context).generateFile().data(using: .utf8)!
+			+ UIColorGenerator(colorNames: colorNames, context: context).generateUIKitFile().data(using: .utf8)!
+			+ UIImageGenerator(imageNames: imageNames, context: context).generateUIKitFile().data(using: .utf8)!
 			+ bottomBoilerPlate()
-		
 	}
 	
 	public lazy var colorNames:[String] = {
@@ -38,22 +37,23 @@ public class XCAssetAnalyzer {
 	}()
 	
 	func topBoilerPlate()->Data {
-		"import UIKit\n".data(using: .utf8)!
+		"#if canImport(UIKit)\nimport UIKit\n".data(using: .utf8)!
 	}
 	
 	func bottomBoilerPlate()->Data {
 		switch context {
 		case .swiftPackage:
-			return "\n\n".data(using: .utf8)!
+			return "\n\n#endif\n".data(using: .utf8)!
 			
 		case .xcodeProject:
-			return """
+			return ( "#" + "endif" +  """
+
 extension Bundle {
 	fileprivate static let designConstants:Bundle = Bundle(for:DesignConstantsAnchor.self)
 }
 fileprivate class DesignConstantsAnchor { }
 
-""".data(using: .utf8)!
+""").data(using: .utf8)!
 		}
 		
 		

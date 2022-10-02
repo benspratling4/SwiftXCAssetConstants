@@ -7,10 +7,11 @@ let package = Package(
     name: "SwiftXCAssetConstants",
 	platforms: [
 		.iOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
-		.tvOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
+//		.tvOS(.v13),	//mainly for ExampleProject, ExampleProjectTests
 	],
     products: [
 		.plugin(name: "SwiftXCAssetConstants", targets: ["SwiftXCAssetConstants"]),
+//		.executable(name: "SwiftXCAssetConstantsExec", targets: ["SwiftXCAssetConstantsExec"]),
 //		.library(name: "SwiftXCAssetConstantsLib", targets: ["SwiftXCAssetConstantsLib"]),
 //		.library(name: "ExampleProject", type: .dynamic, targets: ["ExampleProject"])
     ],
@@ -27,22 +28,23 @@ let package = Package(
 						 ]),
 		
 		//the main product, a plugin
-		.plugin(name: "SwiftXCAssetConstants", capability: .buildTool(), dependencies: [
+		.plugin(name: "SwiftXCAssetConstants"
+				, capability: .buildTool()
+				, dependencies: [
 			.target(name: "SwiftXCAssetConstantsExec"),
 		]),
 		
 		//an example of how you would call this plug-in for an ios project
 		.target(name: "ExampleProject"
 				, plugins: [
-			"SwiftXCAssetConstants",
-		]
-			   ),
+					"SwiftXCAssetConstants",
+				]
+		),
 		
 		//sample tests of ExampleProject to make it build
-		.testTarget(name: "ExampleProjectTests", dependencies: [
+		.testTarget(name: "ExampleProjectTests"
+					, dependencies: [
 			.target(name: "ExampleProject")
 		]),
-		
-		
     ]
 )
