@@ -13,7 +13,7 @@ let package = Package(
 	],
     products: [
 		.plugin(name: "SwiftXCAssetConstants", targets: ["SwiftXCAssetConstants"]),
-//		.executable(name: "SwiftXCAssetConstantsExec", targets: ["SwiftXCAssetConstantsExec"]),
+		.executable(name: "SwiftXCAssetConstantsExec", targets: ["SwiftXCAssetConstantsExec"]),
 //		.library(name: "SwiftXCAssetConstantsLib", targets: ["SwiftXCAssetConstantsLib"]),
 //		.library(name: "ExampleProject", type: .dynamic, targets: ["ExampleProject"])
     ],
