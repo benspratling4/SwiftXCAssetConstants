@@ -25,24 +25,38 @@ public class XCAssetAnalyzer {
 	
 	public lazy var colorNames:[String] = {
 		return allSubUrls
-			.filter({ $0.pathExtension == "colorset" })
+			.filter({ $0.pathExtension == colorPathExtension })
 			.map({ $0.deletingPathExtension() })
 			.map({ $0.lastPathComponent })
 	}()
 	
 	public lazy var imageNames:[String] = {
 		return allSubUrls
-			.filter({ $0.pathExtension == "imageset" })
+			.filter({ $0.pathExtension == imagePathExtension })
 			.map({ $0.deletingPathExtension() })
 			.map({ $0.lastPathComponent })
 	}()
 	
 	lazy var allSubUrls:[URL] = {
-		return (
-			try? fileManager
-			.contentsOfDirectory(at: rootURL, includingPropertiesForKeys: nil, options: [])
-			) ?? []
+		recursiveAllSubUrls(in:rootURL)
 	}()
+	
+	
+	private func recursiveAllSubUrls(in url:URL)->[URL] {
+		guard let allSubDirs = try? fileManager
+			.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+		 else {
+			return []
+		}
+		let areResourceSubDirs = allSubDirs.filter({ $0.pathExtension == colorPathExtension || $0.pathExtension == imagePathExtension })
+		let areNotResourceSubDirs = allSubDirs.filter({ !areResourceSubDirs.contains($0) })
+		let additionalSubUrls = areNotResourceSubDirs
+			.filter({ $0.hasDirectoryPath })
+			.map({ recursiveAllSubUrls(in: $0) })
+			.reduce(areResourceSubDirs, +)
+		return additionalSubUrls
+	}
+	
 	
 	func topBoilerPlate()->String {
 		"#if canImport(UIKit)\nimport UIKit\n"
@@ -79,3 +93,7 @@ public enum Context {
 	case swiftPackage
 	case xcodeProject
 }
+
+
+fileprivate let colorPathExtension:String = "colorset"
+fileprivate let imagePathExtension:String = "imageset"
